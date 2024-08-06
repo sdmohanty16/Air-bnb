@@ -9,5 +9,5 @@ public interface AppUserService {
     AppUserDto createUser(AppUserDto appUserDto);
 
 
-    boolean verifyLogin(LoginDto loginDto);
+    String verifyLogin(LoginDto loginDto);
 }

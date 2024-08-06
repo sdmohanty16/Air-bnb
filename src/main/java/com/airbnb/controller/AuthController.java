@@ -18,8 +18,8 @@ public class AuthController {
         this.appUserService = appUserService;
     }
 
-    //http://localhost:8080/api/v1/auth
-    @PostMapping
+    //http://localhost:8080/api/v1/auth/addUser
+    @PostMapping("/addUser")
     public ResponseEntity<AppUserDto> createUser(
             @RequestBody AppUserDto appUserDto
     ){
@@ -32,9 +32,9 @@ public class AuthController {
     public ResponseEntity<String> verifyLogin(
             @RequestBody LoginDto loginDto
             ){
-        boolean status = appUserService.verifyLogin(loginDto);
-        if(status){
-            return new ResponseEntity<>("Successful..." ,HttpStatus.OK);
+        String token = appUserService.verifyLogin(loginDto);
+        if(token!=null){
+            return new ResponseEntity<>(token ,HttpStatus.OK);
         }else {
             return new ResponseEntity<>("Invalid credentials" , HttpStatus.UNAUTHORIZED);
         }

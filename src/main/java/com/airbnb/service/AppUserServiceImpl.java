@@ -12,9 +12,12 @@ import java.util.Optional;
 @Service
 public class AppUserServiceImpl implements AppUserService{
 
+    private JWTService jwtService;
+
     private AppUserRepository appUserRepository;
 
-    public AppUserServiceImpl(AppUserRepository appUserRepository) {
+    public AppUserServiceImpl(JWTService jwtService, AppUserRepository appUserRepository) {
+        this.jwtService = jwtService;
         this.appUserRepository = appUserRepository;
     }
 
@@ -42,13 +45,15 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     @Override
-    public boolean verifyLogin(LoginDto loginDto) {
+    public String verifyLogin(LoginDto loginDto) {
         Optional<AppUser> opUsername = appUserRepository.findByUsername(loginDto.getUsername());
         if(opUsername.isPresent()){
-            AppUser appUser = opUsername.get();
-            return BCrypt.checkpw(loginDto.getPassword(), appUser.getPassword());
+            AppUser user = opUsername.get();
+            if(BCrypt.checkpw(loginDto.getPassword(), user.getPassword())){
+                return jwtService.generateToken(user);
+            }
         }
-        return false;
+        return null;
     }
 
     AppUser mapToEntity(AppUserDto dto){

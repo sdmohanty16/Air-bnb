@@ -13,11 +13,13 @@ public class SecurityConfig {
             HttpSecurity http
     ) throws Exception{
 
-    //h(cd)2
+        //h(cd)2
         http.csrf().disable().cors().disable();
 
-        //happ
-        http.authorizeHttpRequests().anyRequest().permitAll();
+        //harp
+        http.authorizeHttpRequests()
+                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/addUser")
+                .permitAll().anyRequest().authenticated();
         return http.build();
 
     }
