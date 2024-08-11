@@ -1,22 +1,30 @@
 package com.airbnb.config;
 
+import com.airbnb.entity.AppUser;
+import com.airbnb.repository.AppUserRepository;
 import com.airbnb.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
     private JWTService jwtService;
+    private AppUserRepository appUserRepository;
 
-    public JWTFilter(JWTService jwtService) {
+    public JWTFilter(JWTService jwtService, AppUserRepository appUserRepository) {
         this.jwtService = jwtService;
+        this.appUserRepository = appUserRepository;
     }
 
     @Override
@@ -25,7 +33,14 @@ public class JWTFilter extends OncePerRequestFilter {
         if(token!=null && token.startsWith("Bearer ")){
             String tokenVal = token.substring(8, token.length()-1);
             String username = jwtService.getUserName(tokenVal);
-            System.out.println(username);
+            Optional<AppUser> opUser = appUserRepository.findByUsername(username);
+            AppUser appUser = opUser.get();
+
+            UsernamePasswordAuthenticationToken
+                    auth = new UsernamePasswordAuthenticationToken(appUser, null, null);
+            auth.setDetails(new WebAuthenticationDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
+        filterChain.doFilter(request, response);
     }
 }
