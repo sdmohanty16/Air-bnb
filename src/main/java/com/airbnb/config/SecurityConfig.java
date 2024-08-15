@@ -29,8 +29,10 @@ public class SecurityConfig {
         http.addFilterBefore(jwtFilter, AuthorizationFilter.class);
         //harpaa
         http.authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
+                .requestMatchers("/api/v1/auth/createuser", "/api/v1/auth/createpropertyowner","/api/v1/auth/login")
                 .permitAll()
+                .requestMatchers("/api/v1/property/addProperty").hasRole("OWNER")
+                .requestMatchers("http://localhost:8080/api/v1/auth/createpropertymanager").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated();
         return http.build();

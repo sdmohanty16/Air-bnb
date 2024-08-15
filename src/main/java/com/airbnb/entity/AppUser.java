@@ -26,6 +26,8 @@ public class AppUser {
     @Column(name = "password", nullable = false, length = 1000)
     private String password;
 
+    @Column(name = "role", nullable = false)
+    private String role;
 
     public Long getId() {
         return id;
@@ -65,5 +67,13 @@ public class AppUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

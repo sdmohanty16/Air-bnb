@@ -62,6 +62,7 @@ public class AppUserServiceImpl implements AppUserService{
         entity.setEmail(dto.getEmail());
         entity.setUsername(dto.getUsername());
         entity.setPassword(dto.getPassword());
+        entity.setRole(dto.getRole());
         return entity;
     }
 
@@ -72,6 +73,7 @@ public class AppUserServiceImpl implements AppUserService{
         dto.setEmail(user.getEmail());
         dto.setUsername(user.getUsername());
         dto.setPassword(user.getPassword());
+        dto.setRole(user.getRole());
         return dto;
     }
 }
